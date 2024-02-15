@@ -1,33 +1,24 @@
-# Account Trade Limit
-
-This repo is a submission to the [zkSync Era Hack0 on buidlBox](https://app.buidlbox.io/zksync/era-hack-series)
-
-<p align="center">
-<img width="750" alt="Screen Shot 2023-03-11 at 17 46 38" src="https://user-images.githubusercontent.com/88586592/224474754-7c02a7f4-75de-4e6f-bff1-3113c5d7b095.png">
-</p>
+# Modular zkSync Native AA Wallet with Increment Finance Limit Order Module
 
 ## Overview
 
-This project implements an Account Abstraction wallet contract with multiple unique features: swap & trade size limit, multicall, and meta-transaction via paymaster.
+This repository contains a modular zkSync native Account Abstraction wallet with a module for executing limit orders on Increment Finance, as well as a paymaster-as-a-service called GasPond.
 
-Contract: [`Account.sol`](https://github.com/porco-rosso-j/zksync-account-trade-limit/blob/5903181b50b369df3d22de9e3501cd16075bbf09/src/aa-wallet/Account.sol) & [`AccountFacotory.sol`](https://github.com/porco-rosso-j/zksync-account-trade-limit/blob/5903181b50b369df3d22de9e3501cd16075bbf09/src/aa-wallet/AccountFactory.sol)
+This repo is based on a [submission to the zkSync Era Hack0](https://app.buidlbox.io/projects/nongaswap) by [porco-rosso-j](https://github.com/porco-rosso-j), which won the Account Abstraction & Security sponsr prize from zkSync.
+
+Contract: [`Account.sol`](https://github.com/webthethird/zksync-account-trade-limit/blob/5903181b50b369df3d22de9e3501cd16075bbf09/src/aa-wallet/Account.sol) & [`AccountFactory.sol`](https://github.com/webthethird/zksync-account-trade-limit/blob/5903181b50b369df3d22de9e3501cd16075bbf09/src/aa-wallet/AccountFactory.sol)
 
 ## Account Trade Limit & Swap Module
 
-Modules serve as peripheral helpers and give AA-accounts extensional functionalities and protective limitations. This project has a module called SwapModule that allows accounts to swap tokens on AMM DEX with limitations such as token whitelist, daily trade size limit, and maximum size per trade. This module is recommended for non-veteran users who ought to trade crypto assets as conservatively as possible.
+Modules serve as peripheral helpers and give AA-accounts extensional functionalities and protective limitations.
 
-### SwapModule
+This project has a module called <INSERT MODULE NAME AND DESCRIPTION HERE>
 
-Contracts: [`SwapModuleUniV2.sol`](https://github.com/porco-rosso-j/zksync-account-trade-limit/blob/main/src/aa-wallet/modules/swapModule/SwapModuleUnV2.sol) & [`SwapModuleBase.sol`](https://github.com/porco-rosso-j/zksync-account-trade-limit/blob/main/src/aa-wallet/modules/swapModule/SwapModuleBase.sol)
-
-- SwapModuleUniV2 is an executor, delegatecalled from Account and executes swap methods on an UniswapV2's router contract.
-- SwapModuleBase is a base for executors, being in charge of all the validations logic and storing variables.
-
-The rationale for deploying SwapModuleBase separately is that 1) with delegatecall, variables stored in SwapModuleUniV2 can't be read and used for validation logics, and 2) SwapModuleBase should serve as a single base for multiple executors since SwapModule can integrate multiple DEXs by deploying new executors contracts.
+### LimitOrderModule (tbd)
 
 ## GasPond(Paymaster)
 
-Contract: [`GasPond.sol`](https://github.com/porco-rosso-j/zksync-account-trade-limit/blob/main/src/aa-wallet/paymaster/GasPond.sol)
+Contract: [`GasPond.sol`](https://github.com/webthethird/zksync-account-trade-limit/blob/main/src/aa-wallet/paymaster/GasPond.sol)
 
 A Paymaster contract called GasPond allows both free transactions and gas payments in ERC20 for accounts. GasPond also supports accounts' transactions via modules such as SwapModule if enabled.
 
@@ -43,39 +34,18 @@ A project called XYZinc becomes a sponsor on GasPond, aiming to increase trading
 
 ## Multicall
 
-Contract: [`Multicall`](https://github.com/porco-rosso-j/zksync-account-trade-limit/blob/main/src/aa-wallet/libraries/Multicall.sol)
+Contract: [`Multicall`](https://github.com/webthethird/zksync-account-trade-limit/blob/main/src/aa-wallet/libraries/Multicall.sol)
 
 Account inherits Multicall contract that allows the account to perform both call and delegatecall in the same transaction. It also supports call/delegatecall to module contracts so that the account can combine any arbitrary logic in modules with methods in external contracts.
 
-For example, 1) approve tx to an ERC20 token 2) swap tx via SwapModule.
-
-## Demo
-### Video
-
-The demo below shows how it looks like to swap DAI for ETH on DEX UI.
-
-1. Connect the deployed account contract with the Swap UI.
-2. Check several limitations that SwapModule imposes on Account: Token whitelist, Max size per trade and Daily trade limit.
-3. Swap DAI for ETH ( gas fee paid in DAI via GasPond ) by signing for EIP712 transaction with Metamask.
-
-https://user-images.githubusercontent.com/88586592/224517521-52d24b7a-de5a-43c2-a3a6-b4f6399f9283.mp4
-
-### Flow
-
-The image below depicts the technical flow of the transaction in the demo video. 
-
-<p align="center">
-<img width="750" alt="Screen Shot 2023-03-12 at 7 50 45" src="https://user-images.githubusercontent.com/88586592/224521483-df2a6cad-c653-4a16-91fb-6e73de31a1db.png">
-<p/>
-
 ## Deployment
 
-Deploy and configure all the contracts on zkSync local network and try features available with Account Abstraction Wallet and its module. 
+Deploy and configure all the contracts on zkSync local network and try features available with Account Abstraction Wallet and its module.
 
 ### Setup & Install dependencies
 
 ```shell
-git clone git@github.com:porco-rosso-j/zksync-account-trade-limit.git
+git clone git@github.com:webthethird/zksync-account-trade-limit.git
 cd zksync-account-trade-limit
 yarn
 ```
@@ -100,7 +70,7 @@ yarn hardhat compile
 yarn hardhat deploy-zksync --script deploy/deployAll.ts
 ```
 
-The deploy script above deploys the all necessary contracts and carry out initialization/configuration for each contract. For more details on how the deployment proceeds, look [`./deploy/..`](https://github.com/porco-rosso-j/zksync-account-trade-limit/tree/main/deploy) folder.
+The deploy script above deploys the all necessary contracts and carry out initialization/configuration for each contract. For more details on how the deployment proceeds, look [`./deploy/..`](https://github.com/webthethird/zksync-account-trade-limit/tree/main/deploy) folder.
 
 The output would look like the following.
 
@@ -122,7 +92,7 @@ multicall1: "0xcFEbe41427dB860B7760507f50F39370e27e9D61",
 multicall2: "0x8A1215E77D2ea1ce759a6bB0366870B21548F502",
 ```
 
-Copy & paste all these deployed addresses into [`address.ts`](https://github.com/porco-rosso-j/zksync-account-trade-limit/blob/main/frontend/src/common/address.ts) and only the three of token addresses into [`tokenlist.json`](https://github.com/porco-rosso-j/zksync-account-trade-limit/blob/main/frontend/src/components/Modal/token_list.json).
+Copy & paste all these deployed addresses into [`address.ts`](https://github.com/webthethird/zksync-account-trade-limit/blob/main/frontend/src/common/address.ts) and only the three of token addresses into [`tokenlist.json`](https://github.com/webthethird/zksync-account-trade-limit/blob/main/frontend/src/components/Modal/token_list.json).
 
 ### Setup & Run frontend
 
@@ -134,7 +104,7 @@ yarn start
 
 ### Connect Wallet & Account
 
-Tap "Connect to a wallet" button at the top right in the UI and click it again. Then it shows you the account setting popup like in the image below. 
+Tap "Connect to a wallet" button at the top right in the UI and click it again. Then it shows you the account setting popup like in the image below.
 
 Put the deployed account address (`0xD1180...`) into the field below `"Connect With Contract Account"` button and click it. If successuful, the connnected address on UI will be changed to the account address.
 
@@ -152,7 +122,7 @@ Account only owns DAI, neither ETH, WETH nor LUSD. But swapping DAI for ETH will
 
 So, please put the amount you want to swap. As you can see in the demo above, several limitations and warnings by SwapModule will be shown in `Account Trade Limit` section. Swap succeeds unless it violates those imposed restrictions.
 
-## Question & Feedback
+## Question & Feedback (update this section for Increment when ready)
 
 Discord: Porco#3106  
 Twitter: [@porco_rosso_j](https://twitter.com/porco_rosso_j)
